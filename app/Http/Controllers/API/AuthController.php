@@ -77,10 +77,10 @@ class AuthController extends Controller
     //methode pour update profile user (request_methode: put)
     public function updateProfile(Request $request){
         $validator=Validator::make($request->all(),[
-            'name' => 'required',
-            'email' => 'required|email',
-            'password' => 'required|min:6',
-            
+            'name' => 'sometimes|required',
+            'email' => 'sometimes|required|email||unique:users,email,' . Auth::id(),
+            'old_password' => 'required|min:6',
+            'new_password' => 'required|min:6',
         ]);
 
         if($validator->fails()){
@@ -91,16 +91,25 @@ class AuthController extends Controller
            }
            
         $user= Auth::User();
-        $user->name= $request->name;
-        $user->email= $request->email;
-        $user->password= Hash::make($request->password);
+
+        if(Hash::check($request->old_password,$user->password)){
+            $user->name= $request->name;
+            $user->email= $request->email;
+            $user->password= Hash::make($request->new_password);
+
+            $user->update();
         
-        $user->update();
-        
-        return response()->json([
-            "status" => 'success',
-            "message" => 'le profile de user a été modifié avec success',
-            'data' => $user
-        ],200);
+            return response()->json([
+                "status" => 'success',
+                "message" => 'le profile de user a été modifié avec success',
+                'data' => $user
+            ],200);
+            
+         }else{
+            return response()->json([
+                "status" => 'error',
+                "message" => "L'ancien mot de passe est incorrect",
+            ],400);
+         }    
     }
 }

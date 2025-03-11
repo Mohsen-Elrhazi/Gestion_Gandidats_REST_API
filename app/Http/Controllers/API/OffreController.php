@@ -1,6 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
+
+use App\Http\Controllers\Controller;
 
 use App\Models\Offre;
 use Illuminate\Http\Request;
@@ -74,7 +76,7 @@ class OffreController extends Controller
     public function show(Offre $offre)
     {
         return response()->json([
-            "status" => "uccesss",
+            "status" => "successs",
             "data" => $offre,
         ]);
     }
@@ -133,4 +135,5 @@ class OffreController extends Controller
             "message" => "offre a ete supprimé",
          ],200);
     }
+    
 }

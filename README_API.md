@@ -69,3 +69,4 @@ json
     "message": "Échec de l\"authentification, vérifiez vos informations",
     "data": null
 }
+
