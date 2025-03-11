@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Offre;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 class OffreController extends Controller
 {
     /**
@@ -12,7 +13,9 @@ class OffreController extends Controller
      */
     public function index()
     {
-        //
+        return response()->json([
+            "status" => "success",
+        ],200);
     }
 
     /**
@@ -28,7 +31,39 @@ class OffreController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
+       $validator= Validator::make($request->all(),[
+            'title' =>'required',
+            'description' =>'required',
+            'location' =>'required',
+            'contract_type' =>'required',
+       ]);
+
+       if($validator->fails()){
+        return response()->json([
+            "status" => "error",
+            "message" => "Veuillez remplir tous les champs",
+         ]);
+       }
+       
+         $user= Auth::user();
+        //  $user= auth()->user();
+        $offre= new Offre();
+        
+        $offre->title=$request->title;
+        $offre->description=$request->description;
+        $offre->location=$request->location;
+        $offre->contract_type=$request->contract_type;
+        $offre->user_id= $user->id;
+        
+         $offre->save();
+         
+         return response()->json([
+            "status" => "success",
+            "message" => "offre a ete enregistre",
+            "data" => $offre,
+         ]);
+        
     }
 
     /**
@@ -36,7 +71,10 @@ class OffreController extends Controller
      */
     public function show(Offre $offre)
     {
-        //
+        return response()->json([
+            "status" => "uccesss",
+            "data" => $offre,
+        ]);
     }
 
     /**
@@ -52,14 +90,45 @@ class OffreController extends Controller
      */
     public function update(Request $request, Offre $offre)
     {
-        //
-    }
+        $validator= Validator::make($request->all(),[
+            'title' =>'required',
+            'description' =>'required',
+            'location' =>'required',
+            'contract_type' =>'required',
+       ]);
+
+       if($validator->fails()){
+        return response()->json([
+            "status" => "error",
+            "message" => "Veuillez remplir tous les champs",
+         ],400);
+       }
+// $offre=Offre::find($id);
+       $offre->title=$request->title;
+       $offre->description=$request->description;
+       $offre->location=$request->location;
+      $offre->contract_type=$request->contract_type;
+
+      $offre->update();
+    
+      return response()->json([
+        "status" => "success",
+        "message" => "offre a ete modifie",
+     ],200);
+   }
+        
+    
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(Offre $offre)
     {
-        //
+        $offre->delete();
+        
+        return response()->json([
+            "status" => "success",
+            "message" => "offre a ete supprimé",
+         ],200);
     }
 }
