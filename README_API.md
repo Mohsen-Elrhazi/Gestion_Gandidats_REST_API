@@ -57,7 +57,8 @@ json
         "email_verified_at": null,
         "created_at": "2025-03-10T22:54:14.000000Z",
         "updated_at": "2025-03-10T22:54:14.000000Z"
-    }
+    },
+    "token": "7|bUt1DJCKGu72aaRi3rCjBwTBeLcwICLuGInnNA06caa74a1a"
 }
 
 Réponse en cas d'erreur (401 Unauthorized)

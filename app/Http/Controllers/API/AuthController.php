@@ -16,6 +16,7 @@ class AuthController extends Controller
             'email' => 'required|email',
             'password' => 'required|min:6',
             'confirm_password' => 'required|same:password',
+            'role' => 'required',
         ]);
         
        $user = new User();
@@ -23,6 +24,7 @@ class AuthController extends Controller
         $user->name= $request->name;
         $user->email= $request->email;
         $user->password= Hash::make($request->password);
+        $user->role_id= $request->role;
         $user->save();
         
     
@@ -52,7 +54,8 @@ class AuthController extends Controller
             return response()->json([
                 "status" => 'success',
                 "message" => 'Authentification réussi',
-                 'data' => $user
+                 'data' => $user,
+                 'token' => $user->createToken('myApp')->plainTextToken,
             ],200);
         }
         
