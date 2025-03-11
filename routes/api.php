@@ -25,4 +25,6 @@ Route::post('login', [AuthController::class ,'login'] );
 
 Route::middleware('auth:sanctum')->group(function(){
     Route::resource('offres',OffreController::class);
+    Route::put('updateProfile', [AuthController::class ,'updateProfile'] );
+
 });

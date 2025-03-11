@@ -7,17 +7,25 @@ use App\Models\User;
 use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
     public function register(Request $request){
-        $request->validate([
+       $validator=Validator::make($request->all(),[
             'name' => 'required',
             'email' => 'required|email',
             'password' => 'required|min:6',
             'confirm_password' => 'required|same:password',
             'role' => 'required',
         ]);
+
+        if($validator->fails()){
+            return response()->json([
+                "status" => "error",
+                "message" => "Validation échouée",
+             ],400);
+           }
         
        $user = new User();
        
@@ -64,5 +72,30 @@ class AuthController extends Controller
             "message" => 'Échec de l"authentification, vérifiez vos informations',
             'data' => NULL
         ],401);
+    }
+
+    //methode pour update profile user (request_methode: put)
+    public function updateProfile(Request $request){
+        $user= Auth::User();
+        
+        if($request->filled('name')){
+            $user->name= $request->name;
+        }
+
+        if($request->filled('email')){
+            $user->email= $request->email;
+        }
+
+        if($request->filled('password')){
+            $user->password= Hash::make($request->password);
+        }
+        
+        $user->update();
+        
+        return response()->json([
+            "status" => 'success',
+            "message" => 'le profile de user a ete modifier avec success',
+            'data' => $user
+        ],200);
     }
 }

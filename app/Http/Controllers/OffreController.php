@@ -13,8 +13,10 @@ class OffreController extends Controller
      */
     public function index()
     {
+        $offres = Offre::all();
         return response()->json([
             "status" => "success",
+            "data"=> $offres
         ],200);
     }
 
@@ -42,7 +44,7 @@ class OffreController extends Controller
        if($validator->fails()){
         return response()->json([
             "status" => "error",
-            "message" => "Veuillez remplir tous les champs",
+            "message" => "Validation échouée",
          ]);
        }
        
@@ -100,7 +102,7 @@ class OffreController extends Controller
        if($validator->fails()){
         return response()->json([
             "status" => "error",
-            "message" => "Veuillez remplir tous les champs",
+            "message" => "Validation échouée",
          ],400);
        }
 // $offre=Offre::find($id);
