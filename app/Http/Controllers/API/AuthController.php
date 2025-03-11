@@ -44,22 +44,22 @@ class AuthController extends Controller
             'password'=> 'required'
         ]);
 
-        // if(Auth::attempt(['email'=> $request->email,'password'=> $request->password])){
+        // if(Auth::attempt(['email'=> $request->email, 'password'=> $request->password])){
         // ou
         if(Auth::attempt($request->only('email','password'))){
             $user= Auth::user();
             
             return response()->json([
                 "status" => 'success',
-                "message" => 'Utilisateur enregistré avec succès',
+                "message" => 'Authentification réussi',
                  'data' => $user
-            ]);
+            ],200);
         }
         
         return response()->json([
             "status" => 'error',
-            "message" => 'errpr authentification',
+            "message" => 'Échec de l"authentification, vérifiez vos informations',
             'data' => NULL
-        ]);
+        ],401);
     }
 }
