@@ -187,7 +187,7 @@ class OffreController extends Controller
 
         return response()->json([
             "status" => "success",
-            "message" => "Candidature envoyée avec succès",
+            "message" => "Email envoyée avec succès",
             "candidats email" => $candidat->email
                 ], 200);
     } catch (\Exception $e) {
