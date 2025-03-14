@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\RegisterRequest;
 use App\Models\User;
 use Auth;
 use Illuminate\Http\Request;
@@ -11,34 +12,9 @@ use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
-    public function register(Request $request){
-       $validator=Validator::make($request->all(),[
-            'name' => 'required',
-            'email' => 'required|email',
-            'password' => 'required|min:6',
-            'confirm_password' => 'required|same:password',
-            'role' => 'required',
-        ],[
-            'name.required' => 'Le nom est obligatoire.',
-            'email.required' => 'L\'email est obligatoire.',
-            'email.email' => 'Veuillez fournir une adresse email valide.',
-            'email.unique' => 'Cet email est déjà utilisé.',
-            'password.required' => 'Le mot de passe est obligatoire.',
-            'password.min' => 'Le mot de passe doit contenir au moins 6 caractères.',
-            'confirm_password.required' => 'La confirmation du mot de passe est requise.',
-            'confirm_password.same' => 'Les mots de passe ne correspondent pas.',
-            'role.required' => 'Le rôle est obligatoire.',
-        ]);
-
-        if($validator->fails()){
-            return response()->json([
-                "status" => "error",
-                "message" => "Validation échouée",
-                "errors"=> $validator->errors()
-             ],400);
-           }
-           
+    public function register(RegisterRequest $request){
         try{
+            
        $user = new User();
        
         $user->name= $request->name;
