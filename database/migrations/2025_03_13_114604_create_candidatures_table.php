@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('offre_id')->constrained()->onDelete('cascade');
+            $table->string('cv_path');
+            $table->timestamp('date_candidature');
             $table->timestamps();
         });
     }

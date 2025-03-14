@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 
 use App\Mail\postulerOffre;
+use App\Models\Candidature;
 use App\Models\Offre;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -16,13 +17,31 @@ class OffreController extends Controller
     /**
      * Display a listing of the resource.
      */
+    // public function index()
+    // {
+    //     $offres = Offre::all();
+    //     return response()->json([
+    //         "status" => "success",
+    //         "data"=> $offres
+    //     ],200);
+    // }
+
     public function index()
     {
-        $offres = Offre::all();
+        try{
+              $user=Auth::User();
+        $offres = Offre::where("user_id", $user->id)->get();
         return response()->json([
             "status" => "success",
+            "user"=> $user,
             "data"=> $offres
         ],200);
+        }catch(\Exception $e){
+            return response()->json([
+                "status" => "error",
+                "message"=> "eror". $e->getMessage(),
+            ],200);
+        }
     }
 
     /**
@@ -184,11 +203,21 @@ class OffreController extends Controller
 
     try {
         Mail::send(new postulerOffre($recruteur, $candidat, $cvFilePath, $offre));
+       
+        $candidature=Candidature::create([
+            'user_id' => $candidat->id,
+            'offre_id' => $offre->id,
+            'cv_path' => $cvPath,
+            'date_candidature' =>now(),
+        ]);
 
         return response()->json([
             "status" => "success",
             "message" => "Email envoyée avec succès",
-            "candidats email" => $candidat->email
+            "candidats email" => $candidat->email,
+            'user_id' => $candidat->id,
+            'offre_id' => $offre->id,
+            'cv_path' => $cvPath,
                 ], 200);
     } catch (\Exception $e) {
         return response()->json([

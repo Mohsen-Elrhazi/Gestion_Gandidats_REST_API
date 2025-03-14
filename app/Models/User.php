@@ -50,4 +50,8 @@ class User extends Authenticatable
     public function offres(){
         return $this->hasMany(Offre::class);
     }
+
+    public function candidatures(){
+        return $this->belongsToMany(Offre::class,'candidatures');
+    }
 }
