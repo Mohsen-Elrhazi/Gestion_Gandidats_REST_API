@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\UpdateProfileRequest;
 use App\Models\User;
 use Auth;
 use Illuminate\Http\Request;
@@ -42,12 +44,7 @@ class AuthController extends Controller
     }
   }
 
-    public function login(Request $request){
-        $request->validate([
-            'email'=> 'required|email',
-            'password'=> 'required'
-        ]);
-
+    public function login(LoginRequest $request){
         // if(Auth::attempt(['email'=> $request->email, 'password'=> $request->password])){
         // ou
         if(Auth::attempt($request->only('email','password'))){
@@ -69,21 +66,7 @@ class AuthController extends Controller
     }
 
     //methode pour update profile user (request_methode: put)
-    public function updateProfile(Request $request){
-        $validator=Validator::make($request->all(),[
-            'name' => 'sometimes|required',
-            'email' => 'sometimes|required|email||unique:users,email,' . Auth::id(),
-            'old_password' => 'required|min:6',
-            'new_password' => 'required|min:6',
-        ]);
-
-        if($validator->fails()){
-            return response()->json([
-                "status" => "error",
-                "message" => "Validation échouée",
-             ],400);
-           }
-           
+    public function updateProfile(UpdateProfileRequest $request){
         $user= Auth::User();
 
         if(Hash::check($request->old_password,$user->password)){
@@ -95,7 +78,7 @@ class AuthController extends Controller
         
             return response()->json([
                 "status" => 'success',
-                "message" => 'le profile de user a été modifié avec success',
+                "message" => 'le profile a été modifié avec success',
                 'data' => $user
             ],200);
             
@@ -103,6 +86,7 @@ class AuthController extends Controller
             return response()->json([
                 "status" => 'error',
                 "message" => "L'ancien mot de passe est incorrect",
+                'data' => $user
             ],400);
          }    
     }
